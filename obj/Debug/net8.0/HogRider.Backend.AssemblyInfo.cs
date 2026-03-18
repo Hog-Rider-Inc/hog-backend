@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HogRider.Backend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c22593018a057b4d180cbc3d25a147d04f69e9b8")]
 [assembly: System.Reflection.AssemblyProductAttribute("HogRider.Backend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HogRider.Backend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
