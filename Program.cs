@@ -1,4 +1,4 @@
-using HogRider.Backend.Data.FoodOrderingBackend.Data;
+using HogRider.Backend.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +27,7 @@ if (app.Environment.IsDevelopment())
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
+   // db.Database.Migrate();
 }
 
 app.UseHttpsRedirection();

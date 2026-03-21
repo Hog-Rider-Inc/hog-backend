@@ -1,0 +1,33 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace HogRider.Backend.Models
+{
+    [Table("Restaurants")]
+    public class Restaurant
+    {
+        public int Id { get; set; }
+
+        [Column("account_id")]
+        public int AccountId { get; set; }
+        public int AddressId { get; set; }
+
+        [Required]
+        public string Name { get; set; } = "";
+
+        public string? Description { get; set; }
+
+        [Column("phone_number")]
+        public string? PhoneNumber { get; set; }
+
+        [Column("updated_at")]
+        public DateTime UpdatedAt { get; set; }
+        [Column("created_at")]
+        public DateTime CreatedAt { get; set; }
+
+        // relations
+        public List<MenuItem> MenuItems { get; set; } = new();
+        public List<Review> Reviews { get; set; } = new();
+        public List<Order> Orders { get; set; } = new();
+    }
+}
