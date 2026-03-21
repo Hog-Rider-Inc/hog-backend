@@ -8,6 +8,14 @@ namespace HogRider.Backend.Models
     {
         public int Id { get; set; }
 
+        [Required]
+        public string Title { get; set; } = "";
+
+        [Column("updated_at")]
+        public DateTime UpdatedAt { get; set; }
+        [Column("created_at")]
+        public DateTime CreatedAt { get; set; }
+
         public List<MenuItemCategory> MenuItemDietaryTag { get; set; } = new();
     }
 }
