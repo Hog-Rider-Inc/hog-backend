@@ -10,7 +10,11 @@ namespace HogRider.Backend.Models
 
         [Column("account_id")]
         public int AccountId { get; set; }
+        public Account? Account { get; set; }
+
+        [Column("address_id")]
         public int AddressId { get; set; }
+        public Address? Address { get; set; }
 
         [Required]
         public string Name { get; set; } = "";
@@ -22,11 +26,12 @@ namespace HogRider.Backend.Models
 
         [Column("updated_at")]
         public DateTime UpdatedAt { get; set; }
+
         [Column("created_at")]
         public DateTime CreatedAt { get; set; }
 
         public List<MenuItem> MenuItems { get; set; } = new();
-        public List<Review> Reviews { get; set; } = new();
         public List<Order> Orders { get; set; } = new();
+        public List<Review> Reviews { get; set; } = new();
     }
 }
