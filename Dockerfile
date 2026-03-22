@@ -2,9 +2,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
+COPY src/HogRider.Backend/HogRider.Backend.csproj ./src/HogRider.Backend/
+RUN dotnet restore ./src/HogRider.Backend/HogRider.Backend.csproj
+
 COPY . .
-RUN dotnet restore
-RUN dotnet publish -c Release -o /app/publish
+
+RUN dotnet publish ./src/HogRider.Backend/HogRider.Backend.csproj -c Release -o /app/publish
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
