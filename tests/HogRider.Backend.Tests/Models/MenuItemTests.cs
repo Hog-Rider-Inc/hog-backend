@@ -52,7 +52,7 @@ namespace HogRider.Backend.Tests.Models
 
             var menuItem = new MenuItem
             {
-                Name = "", // ❌ Required
+                Name = "",
                 Price = 5
             };
 
