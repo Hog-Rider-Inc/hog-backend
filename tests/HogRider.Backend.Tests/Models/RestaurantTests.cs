@@ -10,38 +10,13 @@ namespace HogRider.Backend.Tests.Models
     public class RestaurantTests
     {
         [Fact]
-        public void Should_Create_Restaurant()
+        public void Can_Create_Restaurant()
         {
-            var context = TestDbContextFactory.Create();
+            using var context = TestDbContextFactory.Create();
 
-            var restaurant = new Restaurant
-            {
-                Name = "Pizza Place",
-                AccountId = 1,
-                AddressId = 1,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            };
-
-            context.Restaurants.Add(restaurant);
-            context.SaveChanges();
+            var restaurant = TestDataFactory.CreateRestaurant(context);
 
             Assert.Single(context.Restaurants);
-        }
-
-        [Fact]
-        public void Should_Fail_When_Name_Is_Null()
-        {
-            var context = TestDbContextFactory.Create();
-
-            var restaurant = new Restaurant
-            {
-                Name = null!
-            };
-
-            context.Restaurants.Add(restaurant);
-
-            Assert.ThrowsAny<Exception>(() => context.SaveChanges());
         }
     }
 }

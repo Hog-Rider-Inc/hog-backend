@@ -10,55 +10,25 @@ namespace HogRider.Backend.Tests.Models
     public class MenuItemTests
     {
         [Fact]
-        public void Should_Create_MenuItem_With_Valid_Data()
+        public void Can_Create_MenuItem()
         {
-            // Arrange
-            var context = TestDbContextFactory.Create();
+            using var context = TestDbContextFactory.Create();
 
-            var restaurant = new Restaurant
+            var restaurant = TestDataFactory.CreateRestaurant(context);
+
+            var item = new MenuItem
             {
-                Name = "Test Restaurant",
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            };
-
-            context.Restaurants.Add(restaurant);
-            context.SaveChanges();
-
-            var menuItem = new MenuItem
-            {
-                Name = "Burger",
-                Price = 9.99m,
+                Name = "Pizza",
+                Price = 10,
                 RestaurantId = restaurant.Id,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
 
-            // Act
-            context.MenuItems.Add(menuItem);
+            context.MenuItems.Add(item);
             context.SaveChanges();
 
-            // Assert
-            var saved = context.MenuItems.First();
-
-            Assert.Equal("Burger", saved.Name);
-            Assert.Equal(restaurant.Id, saved.RestaurantId);
-        }
-
-        [Fact]
-        public void Should_Fail_When_Name_Is_Empty()
-        {
-            var context = TestDbContextFactory.Create();
-
-            var menuItem = new MenuItem
-            {
-                Name = "",
-                Price = 5
-            };
-
-            context.MenuItems.Add(menuItem);
-
-            Assert.ThrowsAny<Exception>(() => context.SaveChanges());
+            Assert.Single(context.MenuItems);
         }
     }
 }

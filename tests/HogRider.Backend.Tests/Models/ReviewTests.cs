@@ -9,48 +9,46 @@ namespace HogRider.Backend.Tests.Models
 {
     public class ReviewTests
     {
-    //    [Fact]
-    //    public void Should_Create_Review_With_Relations()
-    //    {
-    //        var context = TestDbContextFactory.Create();
+        [Fact]
+        public void Can_Create_Review()
+        {
+            using var context = TestDbContextFactory.Create();
 
-    //        var restaurant = new Restaurant { Name = "R1", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow };
-    //        var client = new Client { FirstName = "John" };
-    //        var order = new Order();
+            var client = TestDataFactory.CreateClient(context);
+            var restaurant = TestDataFactory.CreateRestaurant(context);
+            var address = TestDataFactory.CreateAddress();
 
-    //        context.AddRange(restaurant, client, order);
-    //        context.SaveChanges();
+            context.Add(address);
+            context.SaveChanges();
 
-    //        var review = new Review
-    //        {
-    //            ClientId = client.Id,
-    //            RestaurantId = restaurant.Id,
-    //            OrderId = order.Id,
-    //            Rating = 5,
-    //            CreatedAt = DateTime.UtcNow,
-    //            UpdatedAt = DateTime.UtcNow
-    //        };
+            var order = new Order
+            {
+                ClientId = client.Id,
+                RestaurantId = restaurant.Id,
+                AddressId = address.Id,
+                Status = 0,
+                TotalPrice = 10,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
 
-    //        context.Reviews.Add(review);
-    //        context.SaveChanges();
+            context.Add(order);
+            context.SaveChanges();
 
-    //        Assert.Single(context.Reviews);
-    //    }
+            var review = new Review
+            {
+                ClientId = client.Id,
+                RestaurantId = restaurant.Id,
+                OrderId = order.Id,
+                Rating = 5,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
 
-    //    [Fact]
-    //    public void Should_Save_Invalid_Rating_If_No_Validation()
-    //    {
-    //        var context = TestDbContextFactory.Create();
+            context.Reviews.Add(review);
+            context.SaveChanges();
 
-    //        var review = new Review
-    //        {
-    //            Rating = 999 // ⚠️ šitas praeis jei nėra [Range]
-    //        };
-
-    //        context.Reviews.Add(review);
-    //        context.SaveChanges();
-
-    //        Assert.Equal(999, context.Reviews.First().Rating);
-    //    }
+            Assert.Single(context.Reviews);
+        }
     }
 }

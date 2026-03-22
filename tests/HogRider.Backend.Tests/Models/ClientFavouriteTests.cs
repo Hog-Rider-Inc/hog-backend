@@ -9,40 +9,38 @@ namespace HogRider.Backend.Tests.Models
 {
     public class ClientFavouriteTests
     {
-        //[Fact]
-        //public void Should_Link_Client_And_MenuItem()
-        //{
-        //    var context = TestDbContextFactory.Create();
+        [Fact]
+        public void Can_Add_Favourite()
+        {
+            using var context = TestDbContextFactory.Create();
 
-        //    var client = new Client { FirstName = "John" };
-        //    var restaurant = new Restaurant { Name = "R1", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow };
+            var client = TestDataFactory.CreateClient(context);
+            var restaurant = TestDataFactory.CreateRestaurant(context);
 
-        //    context.AddRange(client, restaurant);
-        //    context.SaveChanges();
+            var item = new MenuItem
+            {
+                Name = "Burger",
+                Price = 5,
+                RestaurantId = restaurant.Id,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
 
-        //    var menuItem = new MenuItem
-        //    {
-        //        Name = "Pizza",
-        //        RestaurantId = restaurant.Id,
-        //        CreatedAt = DateTime.UtcNow,
-        //        UpdatedAt = DateTime.UtcNow
-        //    };
+            context.Add(item);
+            context.SaveChanges();
 
-        //    context.MenuItems.Add(menuItem);
-        //    context.SaveChanges();
+            var fav = new ClientFavourite
+            {
+                ClientId = client.Id,
+                MenuItemId = item.Id,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
 
-        //    var favourite = new ClientFavourite
-        //    {
-        //        ClientId = client.Id,
-        //        MenuItemId = menuItem.Id,
-        //        CreatedAt = DateTime.UtcNow,
-        //        UpdatedAt = DateTime.UtcNow
-        //    };
+            context.Add(fav);
+            context.SaveChanges();
 
-        //    context.ClientFavourites.Add(favourite);
-        //    context.SaveChanges();
-
-        //    Assert.Single(context.ClientFavourites);
-       // }
+            Assert.Single(context.ClientFavourites);
+        }
     }
 }
