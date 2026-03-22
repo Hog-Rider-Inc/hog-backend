@@ -20,11 +20,12 @@ namespace HogRider.Backend.Data
         public DbSet<DietaryTag> DietaryTags { get; set; }
         public DbSet<MenuItemDietaryTag> MenuItemDietaryTags { get; set; }
         public DbSet<Order> Orders { get; set; }
-
-        // minimal stub'ai
-
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Address> Addresses { get; set; }
+
+
+
+        // minimal stub'ai
         public DbSet<OrderMenuItem> OrderMenuItems { get; set; }
         public DbSet<MenuItemImage> MenuItemImages { get; set; }
         public DbSet<RestaurantLogoImage> RestaurantLogoImages { get; set; }
