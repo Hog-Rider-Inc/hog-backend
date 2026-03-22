@@ -27,7 +27,7 @@ namespace HogRider.Backend.Models
         [Column("created_at")]
         public DateTime CreatedAt { get; set; }
 
-        public List<Client> Clients { get; set; } = new();
-        public List<Restaurant> Restaurants { get; set; } = new();
+        public Client? Client { get; set; }
+        public Restaurant? Restaurant { get; set; }
     }
 }

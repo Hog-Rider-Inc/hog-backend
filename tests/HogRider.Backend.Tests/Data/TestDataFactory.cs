@@ -7,8 +7,8 @@ namespace HogRider.Backend.Tests.Data
     {
         public static Account CreateAccount() => new()
         {
-            Username = "test",
-            Email = "test@test.com",
+            Username = $"user_{Guid.NewGuid()}",
+            Email = $"email_{Guid.NewGuid()}@test.com",
             PasswordHash = "123",
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
@@ -37,6 +37,7 @@ namespace HogRider.Backend.Tests.Data
                 Name = "Test Restaurant",
                 AccountId = account.Id,
                 AddressId = address.Id,
+                PhoneNumber = "123456",
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -59,6 +60,8 @@ namespace HogRider.Backend.Tests.Data
             {
                 AccountId = account.Id,
                 AddressId = address.Id,
+                FirstName = "Test",
+                LastName = "User",
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };

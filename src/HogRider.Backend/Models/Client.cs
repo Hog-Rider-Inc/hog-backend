@@ -10,17 +10,19 @@ namespace HogRider.Backend.Models
 
         [Column("account_id")]
         public int AccountId { get; set; }
-        public Account? Account { get; set; }
+        public Account Account { get; set; } = null!;
 
         [Column("address_id")]
         public int? AddressId { get; set; }
         public Address? Address { get; set; }
 
+        [Required]
         [Column("first_name")]
-        public string? FirstName { get; set; }
+        public string FirstName { get; set; } = "";
 
+        [Required]
         [Column("last_name")]
-        public string? LastName { get; set; }
+        public string LastName { get; set; } = "";
 
         [Column("phone_number")]
         public string? PhoneNumber { get; set; }

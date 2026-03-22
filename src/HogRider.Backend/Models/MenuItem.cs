@@ -10,12 +10,13 @@ namespace HogRider.Backend.Models
 
         [Column("restaurant_id")]
         public int RestaurantId { get; set; }
-        public Restaurant? Restaurant { get; set; }
+        public Restaurant Restaurant { get; set; } = null!;
 
         [Required]
         public string Name { get; set; } = "";
 
-        public string? Description { get; set; }
+        [Required]
+        public string Description { get; set; } = "";
 
         public decimal Price { get; set; }
 
@@ -25,11 +26,12 @@ namespace HogRider.Backend.Models
         [Column("created_at")]
         public DateTime CreatedAt { get; set; }
 
+        public List<MenuItemImage> Images { get; set; } = new();
         public List<ClientFavourite> ClientFavourites { get; set; } = new();
         public List<MenuItemCategory> MenuItemCategories { get; set; } = new();
         public List<MenuItemDietaryTag> MenuItemDietaryTags { get; set; } = new();
-        public List<MenuItemImage> Images { get; set; } = new();
         public List<OrderMenuItem> OrderMenuItems { get; set; } = new();
         public List<ClientItemInteraction> ClientItemInteractions { get; set; } = new();
+        public List<ClientRecommendation> ClientRecommendations { get; set; } = new();
     }
 }

@@ -9,10 +9,16 @@ namespace HogRider.Backend.Models
 
         [Column("client_id")]
         public int ClientId { get; set; }
-        public Client? Client { get; set; }
+        public Client Client { get; set; } = null!;
 
         [Column("menu_item_id")]
         public int MenuItemId { get; set; }
-        public MenuItem? MenuItem { get; set; }
+        public MenuItem MenuItem { get; set; } = null!;
+
+        [Column("updated_at")]
+        public DateTime UpdatedAt { get; set; }
+
+        [Column("created_at")]
+        public DateTime CreatedAt { get; set; }
     }
 }

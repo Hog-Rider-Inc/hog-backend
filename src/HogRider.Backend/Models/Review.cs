@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HogRider.Backend.Models
 {
@@ -9,17 +10,18 @@ namespace HogRider.Backend.Models
 
         [Column("client_id")]
         public int ClientId { get; set; }
-        public Client? Client { get; set; }
+        public Client Client { get; set; } = null!;
 
         [Column("restaurant_id")]
         public int RestaurantId { get; set; }
-        public Restaurant? Restaurant { get; set; }
+        public Restaurant Restaurant { get; set; } = null!;
 
         [Column("order_id")]
         public int OrderId { get; set; }
-        public Order? Order { get; set; }
+        public Order Order { get; set; } = null!;
 
-        public string? Text { get; set; }
+        [Required]
+        public string Text { get; set; } = "";
 
         public int Rating { get; set; }
 
