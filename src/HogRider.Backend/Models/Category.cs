@@ -11,9 +11,9 @@ namespace HogRider.Backend.Models
         [Required]
         public string Title { get; set; } = "";
 
-
         [Column("updated_at")]
         public DateTime UpdatedAt { get; set; }
+
         [Column("created_at")]
         public DateTime CreatedAt { get; set; }
 
