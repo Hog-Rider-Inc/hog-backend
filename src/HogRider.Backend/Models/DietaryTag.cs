@@ -13,9 +13,10 @@ namespace HogRider.Backend.Models
 
         [Column("updated_at")]
         public DateTime UpdatedAt { get; set; }
+
         [Column("created_at")]
         public DateTime CreatedAt { get; set; }
 
-        public List<MenuItemCategory> MenuItemDietaryTag { get; set; } = new();
+        public List<MenuItemDietaryTag> MenuItemDietaryTags { get; set; } = new();
     }
 }
