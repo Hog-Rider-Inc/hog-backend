@@ -23,7 +23,6 @@ namespace HogRider.Backend.Models
         public DateTime UpdatedAt { get; set; }
         [Column("created_at")]
         public DateTime CreatedAt { get; set; }
-        // relations
 
         public List<ClientFavourite> ClientFavourites { get; set; } = new();
         public List<Review> Reviews { get; set; } = new();
