@@ -1,6 +1,6 @@
 ﻿using HogRider.Backend.Data;
+using HogRider.Backend.Enums;
 using HogRider.Backend.Models;
-using HogRider.Backend.Tests.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -13,11 +13,39 @@ namespace HogRider.Backend.Tests.Relationships
         [Fact]
         public void MenuItem_Should_Load_Restaurant()
         {
-            var context = TestDbContextFactory.Create();
+            using var context = TestDbContextFactory.Create();
 
+            // 🔥 1. Account
+            var account = new Account
+            {
+                AccountType = AccountType.Restaurant,
+                Username = "rest",
+                Email = "rest@test.com",
+                PasswordHash = "123",
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            // 🔥 2. Address
+            var address = new Address
+            {
+                Country = "LT",
+                City = "Vilnius",
+                Street = "Test",
+                PostalCode = "12345",
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            context.AddRange(account, address);
+            context.SaveChanges();
+
+            // 🔥 3. Restaurant
             var restaurant = new Restaurant
             {
-                Name = "R1",
+                Name = "Test Restaurant",
+                AccountId = account.Id,
+                AddressId = address.Id,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -25,9 +53,11 @@ namespace HogRider.Backend.Tests.Relationships
             context.Restaurants.Add(restaurant);
             context.SaveChanges();
 
+            // 🔥 4. MenuItem
             var item = new MenuItem
             {
-                Name = "Pasta",
+                Name = "Pizza",
+                Price = 10,
                 RestaurantId = restaurant.Id,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
@@ -36,11 +66,13 @@ namespace HogRider.Backend.Tests.Relationships
             context.MenuItems.Add(item);
             context.SaveChanges();
 
-            var result = context.MenuItems
-                .Include(x => x.Restaurant)
+            // 🔥 5. Load su Include
+            var loaded = context.MenuItems
+                .Include(m => m.Restaurant)
                 .First();
 
-            Assert.NotNull(result.Restaurant);
+            Assert.NotNull(loaded.Restaurant);
+            Assert.Equal("Test Restaurant", loaded.Restaurant!.Name);
         }
     }
 }

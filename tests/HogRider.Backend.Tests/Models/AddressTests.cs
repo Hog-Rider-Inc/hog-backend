@@ -24,10 +24,10 @@ namespace HogRider.Backend.Tests.Models
                 UpdatedAt = DateTime.UtcNow
             };
 
-            context.Address.Add(address);
+            context.Addresses.Add(address);
             context.SaveChanges();
 
-            Assert.Single(context.Address);
+            Assert.Single(context.Addresses);
         }
     }
 }
