@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using HogRider.Backend.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HogRider.Backend.Models
 {
@@ -19,7 +20,8 @@ namespace HogRider.Backend.Models
         public int AddressId { get; set; }
         public Address? Address { get; set; }
 
-        public string Status { get; set; } = "";
+        [Column("status")]
+        public OrderStatus Status { get; set; }
 
         [Column("total_price")]
         public decimal TotalPrice { get; set; }
