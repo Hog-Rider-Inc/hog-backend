@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HogRider.Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialFix : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,7 +20,17 @@ namespace HogRider.Backend.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    account_type = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Username = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Email = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    password_hash = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,7 +43,17 @@ namespace HogRider.Backend.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Country = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    City = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Street = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    postal_code = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -59,19 +79,6 @@ namespace HogRider.Backend.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Clients",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Clients", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "DietaryTags",
                 columns: table => new
                 {
@@ -89,18 +96,52 @@ namespace HogRider.Backend.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "Clients",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    account_id = table.Column<int>(type: "int", nullable: false),
+                    address_id = table.Column<int>(type: "int", nullable: true),
+                    first_name = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    last_name = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    phone_number = table.Column<string>(type: "varchar(255)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clients", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Clients_Accounts_account_id",
+                        column: x => x.account_id,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Clients_Address_address_id",
+                        column: x => x.address_id,
+                        principalTable: "Address",
+                        principalColumn: "Id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Restaurants",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     account_id = table.Column<int>(type: "int", nullable: false),
-                    AddressId = table.Column<int>(type: "int", nullable: false),
+                    address_id = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Description = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    phone_number = table.Column<string>(type: "longtext", nullable: true)
+                    phone_number = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false)
@@ -108,6 +149,18 @@ namespace HogRider.Backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Restaurants", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Restaurants_Accounts_account_id",
+                        column: x => x.account_id,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Restaurants_Address_address_id",
+                        column: x => x.address_id,
+                        principalTable: "Address",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -120,7 +173,7 @@ namespace HogRider.Backend.Migrations
                     restaurant_id = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "longtext", nullable: true)
+                    Description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Price = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
@@ -144,16 +197,36 @@ namespace HogRider.Backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    RestaurantId = table.Column<int>(type: "int", nullable: true)
+                    client_id = table.Column<int>(type: "int", nullable: false),
+                    restaurant_id = table.Column<int>(type: "int", nullable: false),
+                    address_id = table.Column<int>(type: "int", nullable: false),
+                    status = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    total_price = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_Restaurants_RestaurantId",
-                        column: x => x.RestaurantId,
+                        name: "FK_Orders_Address_address_id",
+                        column: x => x.address_id,
+                        principalTable: "Address",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Orders_Clients_client_id",
+                        column: x => x.client_id,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_Restaurants_restaurant_id",
+                        column: x => x.restaurant_id,
                         principalTable: "Restaurants",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -163,7 +236,11 @@ namespace HogRider.Backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    restaurant_id = table.Column<int>(type: "int", nullable: false)
+                    restaurant_id = table.Column<int>(type: "int", nullable: false),
+                    image_url = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -213,7 +290,11 @@ namespace HogRider.Backend.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     client_id = table.Column<int>(type: "int", nullable: false),
-                    menu_item_id = table.Column<int>(type: "int", nullable: false)
+                    menu_item_id = table.Column<int>(type: "int", nullable: false),
+                    interaction = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -240,7 +321,9 @@ namespace HogRider.Backend.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     client_id = table.Column<int>(type: "int", nullable: false),
-                    menu_item_id = table.Column<int>(type: "int", nullable: false)
+                    menu_item_id = table.Column<int>(type: "int", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -269,8 +352,7 @@ namespace HogRider.Backend.Migrations
                     menu_item_id = table.Column<int>(type: "int", nullable: false),
                     category_id = table.Column<int>(type: "int", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    DietaryTagId = table.Column<int>(type: "int", nullable: true)
+                    created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -281,11 +363,6 @@ namespace HogRider.Backend.Migrations
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_MenuItemCategories_DietaryTags_DietaryTagId",
-                        column: x => x.DietaryTagId,
-                        principalTable: "DietaryTags",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_MenuItemCategories_MenuItems_menu_item_id",
                         column: x => x.menu_item_id,
@@ -330,7 +407,11 @@ namespace HogRider.Backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    menu_item_id = table.Column<int>(type: "int", nullable: false)
+                    menu_item_id = table.Column<int>(type: "int", nullable: false),
+                    image_url = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -351,7 +432,11 @@ namespace HogRider.Backend.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     order_id = table.Column<int>(type: "int", nullable: false),
-                    menu_item_id = table.Column<int>(type: "int", nullable: false)
+                    menu_item_id = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<long>(type: "bigint", nullable: false),
+                    price_at_order = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -380,12 +465,11 @@ namespace HogRider.Backend.Migrations
                     client_id = table.Column<int>(type: "int", nullable: false),
                     restaurant_id = table.Column<int>(type: "int", nullable: false),
                     order_id = table.Column<int>(type: "int", nullable: false),
-                    Text = table.Column<string>(type: "longtext", nullable: true)
+                    Text = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Rating = table.Column<int>(type: "int", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    MenuItemId = table.Column<int>(type: "int", nullable: true)
+                    created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -396,11 +480,6 @@ namespace HogRider.Backend.Migrations
                         principalTable: "Clients",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Reviews_MenuItems_MenuItemId",
-                        column: x => x.MenuItemId,
-                        principalTable: "MenuItems",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Reviews_Orders_order_id",
                         column: x => x.order_id,
@@ -417,9 +496,27 @@ namespace HogRider.Backend.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClientFavourites_client_id",
+                name: "IX_Accounts_Email",
+                table: "Accounts",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Accounts_Username",
+                table: "Accounts",
+                column: "Username",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Address_Country_City_Street_postal_code",
+                table: "Address",
+                columns: new[] { "Country", "City", "Street", "postal_code" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClientFavourites_client_id_menu_item_id",
                 table: "ClientFavourites",
-                column: "client_id");
+                columns: new[] { "client_id", "menu_item_id" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClientFavourites_menu_item_id",
@@ -427,9 +524,10 @@ namespace HogRider.Backend.Migrations
                 column: "menu_item_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClientItemInteractions_client_id",
+                name: "IX_ClientItemInteractions_client_id_menu_item_id",
                 table: "ClientItemInteractions",
-                column: "client_id");
+                columns: new[] { "client_id", "menu_item_id" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClientItemInteractions_menu_item_id",
@@ -447,19 +545,32 @@ namespace HogRider.Backend.Migrations
                 column: "menu_item_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Clients_account_id",
+                table: "Clients",
+                column: "account_id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Clients_address_id",
+                table: "Clients",
+                column: "address_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Clients_phone_number",
+                table: "Clients",
+                column: "phone_number",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MenuItemCategories_category_id",
                 table: "MenuItemCategories",
                 column: "category_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MenuItemCategories_DietaryTagId",
+                name: "IX_MenuItemCategories_menu_item_id_category_id",
                 table: "MenuItemCategories",
-                column: "DietaryTagId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MenuItemCategories_menu_item_id",
-                table: "MenuItemCategories",
-                column: "menu_item_id");
+                columns: new[] { "menu_item_id", "category_id" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_MenuItemDietaryTags_dietary_tag_id",
@@ -467,9 +578,10 @@ namespace HogRider.Backend.Migrations
                 column: "dietary_tag_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MenuItemDietaryTags_menu_item_id",
+                name: "IX_MenuItemDietaryTags_menu_item_id_dietary_tag_id",
                 table: "MenuItemDietaryTags",
-                column: "menu_item_id");
+                columns: new[] { "menu_item_id", "dietary_tag_id" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_MenuItemImages_menu_item_id",
@@ -487,14 +599,25 @@ namespace HogRider.Backend.Migrations
                 column: "menu_item_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderMenuItems_order_id",
+                name: "IX_OrderMenuItems_order_id_menu_item_id",
                 table: "OrderMenuItems",
-                column: "order_id");
+                columns: new[] { "order_id", "menu_item_id" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_RestaurantId",
+                name: "IX_Orders_address_id",
                 table: "Orders",
-                column: "RestaurantId");
+                column: "address_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_client_id",
+                table: "Orders",
+                column: "client_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_restaurant_id",
+                table: "Orders",
+                column: "restaurant_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RestaurantLogoImages_restaurant_id",
@@ -502,14 +625,21 @@ namespace HogRider.Backend.Migrations
                 column: "restaurant_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reviews_client_id",
-                table: "Reviews",
-                column: "client_id");
+                name: "IX_Restaurants_account_id",
+                table: "Restaurants",
+                column: "account_id",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reviews_MenuItemId",
+                name: "IX_Restaurants_address_id",
+                table: "Restaurants",
+                column: "address_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reviews_client_id_restaurant_id_order_id",
                 table: "Reviews",
-                column: "MenuItemId");
+                columns: new[] { "client_id", "restaurant_id", "order_id" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_order_id",
@@ -525,12 +655,6 @@ namespace HogRider.Backend.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Accounts");
-
-            migrationBuilder.DropTable(
-                name: "Address");
-
             migrationBuilder.DropTable(
                 name: "ClientFavourites");
 
@@ -565,16 +689,22 @@ namespace HogRider.Backend.Migrations
                 name: "DietaryTags");
 
             migrationBuilder.DropTable(
-                name: "Clients");
-
-            migrationBuilder.DropTable(
                 name: "MenuItems");
 
             migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
+                name: "Clients");
+
+            migrationBuilder.DropTable(
                 name: "Restaurants");
+
+            migrationBuilder.DropTable(
+                name: "Accounts");
+
+            migrationBuilder.DropTable(
+                name: "Address");
         }
     }
 }

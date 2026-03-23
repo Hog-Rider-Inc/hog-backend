@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HogRider.Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260322233217_InitialFix")]
+    [Migration("20260323000855_InitialFix")]
     partial class InitialFix
     {
         /// <inheritdoc />
