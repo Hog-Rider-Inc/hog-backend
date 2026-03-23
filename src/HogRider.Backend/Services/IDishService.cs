@@ -4,6 +4,6 @@ namespace HogRider.Backend.Services
 {
     public interface IDishService
     {
-        Task<List<DishDto>> SearchAsync(string? q);
+        Task<List<DishDto>> SearchAsync(string? q, string? category);
     }
 }

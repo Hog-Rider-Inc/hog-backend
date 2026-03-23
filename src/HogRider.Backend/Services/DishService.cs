@@ -13,28 +13,35 @@ public class DishService : IDishService
         _context = context;
     }
 
-    public async Task<List<DishDto>> SearchAsync(string? q)
+    public async Task<List<DishDto>> SearchAsync(string? q, string? category)
     {
         var query = _context.MenuItems
             .Include(mi => mi.Restaurant)
             .Include(mi => mi.Images)
+            .Include(mi => mi.MenuItemCategories)
+                .ThenInclude(mic => mic.Category)
             .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(q))
         {
-            var lowerQ = q.ToLower();
-            query = query.Where(mi => mi.Name.ToLower().Contains(lowerQ));
+            query = query.Where(mi =>
+                EF.Functions.Like(mi.Name, $"%{q}%"));
         }
 
-        var items = await query.ToListAsync();
+        if (!string.IsNullOrWhiteSpace(category))
+        {
+            query = query.Where(mi =>
+                mi.MenuItemCategories.Any(mic =>
+                    mic.Category.Title == category));
+        }
 
-        return items.Select(mi => new DishDto
+        return await query.Select(mi => new DishDto
         {
             Id = mi.Id,
             Name = mi.Name,
-            RestaurantName = mi.Restaurant.Name,
+            RestaurantName = mi.Restaurant != null ? mi.Restaurant.Name : "",
             Price = mi.Price,
-            ImageUrl = mi.Images.FirstOrDefault()?.ImageUrl
-        }).ToList();
+            ImageUrl = mi.Images.Select(i => i.ImageUrl).FirstOrDefault()
+        }).ToListAsync();
     }
 }
