@@ -1,16 +1,20 @@
 ﻿using HogRider.Backend.Data;
 using HogRider.Backend.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// 🌍 PORT (Render + local)
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 builder.WebHost.UseUrls($"http://*:{port}");
 
+// 📦 Services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// 🌐 CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -20,8 +24,9 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader());
 });
 
+// 🗄️ DB
 var connectionString =
-    Environment.GetEnvironmentVariable("DB_CONNECTION") 
+    Environment.GetEnvironmentVariable("DB_CONNECTION")
     ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -31,12 +36,21 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     )
 );
 
+// 🔌 DI
 builder.Services.AddScoped<IDishService, DishService>();
 
 var app = builder.Build();
 
+// ✅ VERY IMPORTANT for Render (proxy)
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
+// 🌐 Middleware order
 app.UseCors("AllowAll");
 
+// 🔥 Swagger (visada įjungtas)
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -44,13 +58,23 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = "swagger";
 });
 
+// 🔐 Auth
 app.UseAuthorization();
+
+// 🎯 Controllers
 app.MapControllers();
 
-using (var scope = app.Services.CreateScope())
+// ✅ Debug endpoint (labai padeda)
+app.MapGet("/", () => "API is running");
+
+// ❗ Migrate TIK lokaliai
+if (app.Environment.IsDevelopment())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        db.Database.Migrate();
+    }
 }
 
 app.Run();
