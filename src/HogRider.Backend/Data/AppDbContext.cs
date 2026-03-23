@@ -32,101 +32,162 @@ namespace HogRider.Backend.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Account>()
-                .Property(e => e.AccountType)
-                .HasConversion<string>();
+            modelBuilder.Entity<Account>(entity =>
+            {
+                entity.Property(e => e.AccountType)
+                    .HasConversion<string>();
 
-            modelBuilder.Entity<Order>()
-                .Property(e => e.Status)
-                .HasConversion<string>();
+                entity.Property(e => e.Username)
+                    .HasMaxLength(100);
 
-            modelBuilder.Entity<ClientItemInteraction>()
-                .Property(e => e.Interaction)
-                .HasConversion<string>();
+                entity.Property(e => e.Email)
+                    .HasMaxLength(150);
 
-            modelBuilder.Entity<Account>()
-                .HasIndex(x => x.Username)
-                .IsUnique();
+                entity.HasIndex(e => e.Username)
+                    .IsUnique();
 
-            modelBuilder.Entity<Account>()
-                .HasIndex(x => x.Email)
-                .IsUnique();
+                entity.HasIndex(e => e.Email)
+                    .IsUnique();
+            });
 
-            modelBuilder.Entity<Client>()
-                .HasIndex(x => x.AccountId)
-                .IsUnique();
+            modelBuilder.Entity<Address>(entity =>
+            {
+                entity.Property(e => e.Country).HasMaxLength(100);
+                entity.Property(e => e.City).HasMaxLength(100);
+                entity.Property(e => e.Street).HasMaxLength(150);
+                entity.Property(e => e.PostalCode).HasMaxLength(20);
 
-            modelBuilder.Entity<Client>()
-                .HasIndex(x => x.PhoneNumber)
-                .IsUnique();
+                entity.HasIndex(e => new { e.Country, e.City, e.Street, e.PostalCode });
+            });
 
-            modelBuilder.Entity<Restaurant>()
-                .HasIndex(x => x.AccountId)
-                .IsUnique();
+            modelBuilder.Entity<Client>(entity =>
+            {
+                entity.Property(e => e.FirstName).HasMaxLength(100);
+                entity.Property(e => e.LastName).HasMaxLength(100);
+                entity.Property(e => e.PhoneNumber).HasMaxLength(20);
 
-            modelBuilder.Entity<Address>()
-                .HasIndex(x => new { x.Country, x.City, x.Street, x.PostalCode });
+                entity.HasIndex(e => e.AccountId)
+                    .IsUnique();
 
-            modelBuilder.Entity<ClientFavourite>()
-                .HasIndex(x => new { x.ClientId, x.MenuItemId })
-                .IsUnique();
+                entity.HasIndex(e => e.PhoneNumber)
+                    .IsUnique();
 
-            modelBuilder.Entity<ClientItemInteraction>()
-                .HasIndex(x => new { x.ClientId, x.MenuItemId })
-                .IsUnique();
+                entity.HasOne(e => e.Account)
+                    .WithOne(a => a.Client)
+                    .HasForeignKey<Client>(e => e.AccountId);
 
-            modelBuilder.Entity<MenuItemCategory>()
-                .HasIndex(x => new { x.MenuItemId, x.CategoryId })
-                .IsUnique();
+                entity.HasOne(e => e.Address)
+                    .WithMany(a => a.Clients)
+                    .HasForeignKey(e => e.AddressId);
+            });
 
-            modelBuilder.Entity<MenuItemDietaryTag>()
-                .HasIndex(x => new { x.MenuItemId, x.DietaryTagId })
-                .IsUnique();
+            modelBuilder.Entity<Restaurant>(entity =>
+            {
+                entity.Property(e => e.Name).HasMaxLength(200);
+                entity.Property(e => e.PhoneNumber).HasMaxLength(20);
 
-            modelBuilder.Entity<OrderMenuItem>()
-                .HasIndex(x => new { x.OrderId, x.MenuItemId })
-                .IsUnique();
+                entity.HasIndex(e => e.AccountId)
+                    .IsUnique();
 
-            modelBuilder.Entity<Review>()
-                .HasIndex(x => new { x.ClientId, x.RestaurantId, x.OrderId })
-                .IsUnique();
+                entity.HasOne(e => e.Account)
+                    .WithOne(a => a.Restaurant)
+                    .HasForeignKey<Restaurant>(e => e.AccountId);
 
-            modelBuilder.Entity<Client>()
-                .HasOne(x => x.Account)
-                .WithOne(x => x.Client)
-                .HasForeignKey<Client>(x => x.AccountId);
+                entity.HasOne(e => e.Address)
+                    .WithMany(a => a.Restaurants)
+                    .HasForeignKey(e => e.AddressId);
+            });
 
-            modelBuilder.Entity<Restaurant>()
-                .HasOne(x => x.Account)
-                .WithOne(x => x.Restaurant)
-                .HasForeignKey<Restaurant>(x => x.AccountId);
+            modelBuilder.Entity<MenuItem>(entity =>
+            {
+                entity.Property(e => e.Name).HasMaxLength(200);
+                entity.Property(e => e.Description).HasMaxLength(1000);
 
-            modelBuilder.Entity<Client>()
-                .HasOne(x => x.Address)
-                .WithMany(x => x.Clients)
-                .HasForeignKey(x => x.AddressId);
+                entity.HasOne(e => e.Restaurant)
+                    .WithMany(r => r.MenuItems)
+                    .HasForeignKey(e => e.RestaurantId);
+            });
 
-            modelBuilder.Entity<Restaurant>()
-                .HasOne(x => x.Address)
-                .WithMany(x => x.Restaurants)
-                .HasForeignKey(x => x.AddressId);
+            modelBuilder.Entity<Category>(entity =>
+            {
+                entity.Property(e => e.Title).HasMaxLength(100);
+            });
 
-            modelBuilder.Entity<Order>()
-                .HasOne(x => x.Address)
-                .WithMany(x => x.Orders)
-                .HasForeignKey(x => x.AddressId);
+            modelBuilder.Entity<DietaryTag>(entity =>
+            {
+                entity.Property(e => e.Title).HasMaxLength(100);
+            });
 
-            modelBuilder.Entity<Order>()
-                .HasOne(x => x.Client)
-                .WithMany(x => x.Orders)
-                .HasForeignKey(x => x.ClientId)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<MenuItemCategory>(entity =>
+            {
+                entity.HasIndex(e => new { e.MenuItemId, e.CategoryId })
+                    .IsUnique();
+            });
 
-            modelBuilder.Entity<Order>()
-                .HasOne(x => x.Restaurant)
-                .WithMany(x => x.Orders)
-                .HasForeignKey(x => x.RestaurantId)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<MenuItemDietaryTag>(entity =>
+            {
+                entity.HasIndex(e => new { e.MenuItemId, e.DietaryTagId })
+                    .IsUnique();
+            });
+
+            modelBuilder.Entity<Order>(entity =>
+            {
+                entity.Property(e => e.Status)
+                    .HasConversion<string>();
+
+                entity.HasOne(e => e.Address)
+                    .WithMany(a => a.Orders)
+                    .HasForeignKey(e => e.AddressId);
+
+                entity.HasOne(e => e.Client)
+                    .WithMany(c => c.Orders)
+                    .HasForeignKey(e => e.ClientId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.Restaurant)
+                    .WithMany(r => r.Orders)
+                    .HasForeignKey(e => e.RestaurantId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<OrderMenuItem>(entity =>
+            {
+                entity.HasIndex(e => new { e.OrderId, e.MenuItemId })
+                    .IsUnique();
+            });
+
+            modelBuilder.Entity<Review>(entity =>
+            {
+                entity.Property(e => e.Text).HasMaxLength(2000);
+
+                entity.HasIndex(e => new { e.ClientId, e.RestaurantId, e.OrderId })
+                    .IsUnique();
+            });
+
+            modelBuilder.Entity<ClientFavourite>(entity =>
+            {
+                entity.HasIndex(e => new { e.ClientId, e.MenuItemId })
+                    .IsUnique();
+            });
+
+            modelBuilder.Entity<ClientItemInteraction>(entity =>
+            {
+                entity.Property(e => e.Interaction)
+                    .HasConversion<string>();
+
+                entity.HasIndex(e => new { e.ClientId, e.MenuItemId })
+                    .IsUnique();
+            });
+
+            modelBuilder.Entity<MenuItemImage>(entity =>
+            {
+                entity.Property(e => e.ImageUrl).HasMaxLength(500);
+            });
+
+            modelBuilder.Entity<RestaurantLogoImage>(entity =>
+            {
+                entity.Property(e => e.ImageUrl).HasMaxLength(500);
+            });
         }
     }
 }
