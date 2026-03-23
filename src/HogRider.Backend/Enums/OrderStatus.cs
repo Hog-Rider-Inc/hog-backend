@@ -2,7 +2,7 @@
 {
     public enum OrderStatus
     {
-        Pending,
+        pending_acceptance,
         Confirmed,
         Preparing,
         Delivered,

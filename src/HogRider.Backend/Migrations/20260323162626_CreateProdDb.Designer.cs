@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HogRider.Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260323002538_InitialFix")]
-    partial class InitialFix
+    [Migration("20260323162626_CreateProdDb")]
+    partial class CreateProdDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,7 +35,7 @@ namespace HogRider.Backend.Migrations
 
                     b.Property<string>("AccountType")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasColumnType("enum('client','restaurant','admin')")
                         .HasColumnName("account_type");
 
                     b.Property<DateTime>("CreatedAt")
@@ -248,7 +248,7 @@ namespace HogRider.Backend.Migrations
 
                     b.Property<string>("Interaction")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasColumnType("enum('like','dislike')")
                         .HasColumnName("interaction");
 
                     b.Property<int>("MenuItemId")
@@ -351,7 +351,7 @@ namespace HogRider.Backend.Migrations
                         .HasColumnType("varchar(200)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(8,2)");
 
                     b.Property<int>("RestaurantId")
                         .HasColumnType("int")
@@ -362,6 +362,8 @@ namespace HogRider.Backend.Migrations
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name");
 
                     b.HasIndex("RestaurantId");
 
@@ -495,11 +497,11 @@ namespace HogRider.Backend.Migrations
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasColumnType("enum('pending','confirmed','preparing','delivered','cancelled')")
                         .HasColumnName("status");
 
                     b.Property<decimal>("TotalPrice")
-                        .HasColumnType("decimal(65,30)")
+                        .HasColumnType("decimal(8,2)")
                         .HasColumnName("total_price");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -538,7 +540,7 @@ namespace HogRider.Backend.Migrations
                         .HasColumnName("order_id");
 
                     b.Property<decimal>("PriceAtOrder")
-                        .HasColumnType("decimal(65,30)")
+                        .HasColumnType("decimal(8,2)")
                         .HasColumnName("price_at_order");
 
                     b.Property<long>("Quantity")

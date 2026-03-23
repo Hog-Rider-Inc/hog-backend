@@ -1,4 +1,5 @@
-﻿using HogRider.Backend.Models;
+﻿using HogRider.Backend.Enums;
+using HogRider.Backend.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace HogRider.Backend.Data
@@ -32,24 +33,24 @@ namespace HogRider.Backend.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // ACCOUNT
             modelBuilder.Entity<Account>(entity =>
             {
                 entity.Property(e => e.AccountType)
-                    .HasConversion<string>();
+                    .HasConversion(
+                        v => v.ToString().ToLower(),
+                        v => Enum.Parse<AccountType>(v, true)
+                    )
+                    .HasColumnType("enum('client','restaurant','admin')");
 
-                entity.Property(e => e.Username)
-                    .HasMaxLength(100);
+                entity.Property(e => e.Username).HasMaxLength(100);
+                entity.Property(e => e.Email).HasMaxLength(150);
 
-                entity.Property(e => e.Email)
-                    .HasMaxLength(150);
-
-                entity.HasIndex(e => e.Username)
-                    .IsUnique();
-
-                entity.HasIndex(e => e.Email)
-                    .IsUnique();
+                entity.HasIndex(e => e.Username).IsUnique();
+                entity.HasIndex(e => e.Email).IsUnique();
             });
 
+            // ADDRESS
             modelBuilder.Entity<Address>(entity =>
             {
                 entity.Property(e => e.Country).HasMaxLength(100);
@@ -58,19 +59,18 @@ namespace HogRider.Backend.Data
                 entity.Property(e => e.PostalCode).HasMaxLength(20);
 
                 entity.HasIndex(e => new { e.Country, e.City, e.Street, e.PostalCode });
+                // jei nori UNIQUE -> pridėk .IsUnique()
             });
 
+            // CLIENT
             modelBuilder.Entity<Client>(entity =>
             {
                 entity.Property(e => e.FirstName).HasMaxLength(100);
                 entity.Property(e => e.LastName).HasMaxLength(100);
                 entity.Property(e => e.PhoneNumber).HasMaxLength(20);
 
-                entity.HasIndex(e => e.AccountId)
-                    .IsUnique();
-
-                entity.HasIndex(e => e.PhoneNumber)
-                    .IsUnique();
+                entity.HasIndex(e => e.AccountId).IsUnique();
+                entity.HasIndex(e => e.PhoneNumber).IsUnique();
 
                 entity.HasOne(e => e.Account)
                     .WithOne(a => a.Client)
@@ -81,13 +81,13 @@ namespace HogRider.Backend.Data
                     .HasForeignKey(e => e.AddressId);
             });
 
+            // RESTAURANT
             modelBuilder.Entity<Restaurant>(entity =>
             {
                 entity.Property(e => e.Name).HasMaxLength(200);
                 entity.Property(e => e.PhoneNumber).HasMaxLength(20);
 
-                entity.HasIndex(e => e.AccountId)
-                    .IsUnique();
+                entity.HasIndex(e => e.AccountId).IsUnique();
 
                 entity.HasOne(e => e.Account)
                     .WithOne(a => a.Restaurant)
@@ -98,42 +98,58 @@ namespace HogRider.Backend.Data
                     .HasForeignKey(e => e.AddressId);
             });
 
+            // MENU ITEM
             modelBuilder.Entity<MenuItem>(entity =>
             {
                 entity.Property(e => e.Name).HasMaxLength(200);
                 entity.Property(e => e.Description).HasMaxLength(1000);
+
+                entity.Property(e => e.Price)
+                    .HasColumnType("decimal(8,2)");
+
+                entity.HasIndex(e => e.Name);
 
                 entity.HasOne(e => e.Restaurant)
                     .WithMany(r => r.MenuItems)
                     .HasForeignKey(e => e.RestaurantId);
             });
 
+            // CATEGORY
             modelBuilder.Entity<Category>(entity =>
             {
                 entity.Property(e => e.Title).HasMaxLength(100);
             });
 
+            // DIETARY TAG
             modelBuilder.Entity<DietaryTag>(entity =>
             {
                 entity.Property(e => e.Title).HasMaxLength(100);
             });
 
+            // MENU ITEM CATEGORY
             modelBuilder.Entity<MenuItemCategory>(entity =>
             {
-                entity.HasIndex(e => new { e.MenuItemId, e.CategoryId })
-                    .IsUnique();
+                entity.HasIndex(e => new { e.MenuItemId, e.CategoryId }).IsUnique();
             });
 
+            // MENU ITEM DIETARY TAG
             modelBuilder.Entity<MenuItemDietaryTag>(entity =>
             {
-                entity.HasIndex(e => new { e.MenuItemId, e.DietaryTagId })
-                    .IsUnique();
+                entity.HasIndex(e => new { e.MenuItemId, e.DietaryTagId }).IsUnique();
             });
 
+            // ORDER
             modelBuilder.Entity<Order>(entity =>
             {
                 entity.Property(e => e.Status)
-                    .HasConversion<string>();
+                    .HasConversion(
+                        v => v.ToString().ToLower(),
+                        v => Enum.Parse<OrderStatus>(v, true)
+                    )
+                    .HasColumnType("enum('pending','confirmed','preparing','delivered','cancelled')");
+
+                entity.Property(e => e.TotalPrice)
+                    .HasColumnType("decimal(8,2)");
 
                 entity.HasOne(e => e.Address)
                     .WithMany(a => a.Orders)
@@ -150,12 +166,16 @@ namespace HogRider.Backend.Data
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
+            // ORDER MENU ITEM
             modelBuilder.Entity<OrderMenuItem>(entity =>
             {
-                entity.HasIndex(e => new { e.OrderId, e.MenuItemId })
-                    .IsUnique();
+                entity.Property(e => e.PriceAtOrder)
+                    .HasColumnType("decimal(8,2)");
+
+                entity.HasIndex(e => new { e.OrderId, e.MenuItemId }).IsUnique();
             });
 
+            // REVIEW
             modelBuilder.Entity<Review>(entity =>
             {
                 entity.Property(e => e.Text).HasMaxLength(2000);
@@ -164,21 +184,26 @@ namespace HogRider.Backend.Data
                     .IsUnique();
             });
 
+            // CLIENT FAVOURITE
             modelBuilder.Entity<ClientFavourite>(entity =>
             {
-                entity.HasIndex(e => new { e.ClientId, e.MenuItemId })
-                    .IsUnique();
+                entity.HasIndex(e => new { e.ClientId, e.MenuItemId }).IsUnique();
             });
 
+            // CLIENT INTERACTION
             modelBuilder.Entity<ClientItemInteraction>(entity =>
             {
                 entity.Property(e => e.Interaction)
-                    .HasConversion<string>();
+                    .HasConversion(
+                        v => v.ToString().ToLower(),
+                        v => Enum.Parse<InteractionType>(v, true)
+                    )
+                    .HasColumnType("enum('like','dislike')");
 
-                entity.HasIndex(e => new { e.ClientId, e.MenuItemId })
-                    .IsUnique();
+                entity.HasIndex(e => new { e.ClientId, e.MenuItemId }).IsUnique();
             });
 
+            // IMAGES
             modelBuilder.Entity<MenuItemImage>(entity =>
             {
                 entity.Property(e => e.ImageUrl).HasMaxLength(500);

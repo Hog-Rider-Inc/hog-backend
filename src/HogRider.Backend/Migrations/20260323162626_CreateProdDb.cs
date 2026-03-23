@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HogRider.Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialFix : Migration
+    public partial class CreateProdDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,7 +21,7 @@ namespace HogRider.Backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    account_type = table.Column<string>(type: "longtext", nullable: false)
+                    account_type = table.Column<string>(type: "enum('client','restaurant','admin')", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Username = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -175,7 +175,7 @@ namespace HogRider.Backend.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Description = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Price = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(8,2)", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
@@ -200,9 +200,9 @@ namespace HogRider.Backend.Migrations
                     client_id = table.Column<int>(type: "int", nullable: false),
                     restaurant_id = table.Column<int>(type: "int", nullable: false),
                     address_id = table.Column<int>(type: "int", nullable: false),
-                    status = table.Column<string>(type: "longtext", nullable: false)
+                    status = table.Column<string>(type: "enum('pending','confirmed','preparing','delivered','cancelled')", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    total_price = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    total_price = table.Column<decimal>(type: "decimal(8,2)", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
@@ -291,7 +291,7 @@ namespace HogRider.Backend.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     client_id = table.Column<int>(type: "int", nullable: false),
                     menu_item_id = table.Column<int>(type: "int", nullable: false),
-                    interaction = table.Column<string>(type: "longtext", nullable: false)
+                    interaction = table.Column<string>(type: "enum('like','dislike')", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false)
@@ -434,7 +434,7 @@ namespace HogRider.Backend.Migrations
                     order_id = table.Column<int>(type: "int", nullable: false),
                     menu_item_id = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<long>(type: "bigint", nullable: false),
-                    price_at_order = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    price_at_order = table.Column<decimal>(type: "decimal(8,2)", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
@@ -587,6 +587,11 @@ namespace HogRider.Backend.Migrations
                 name: "IX_MenuItemImages_menu_item_id",
                 table: "MenuItemImages",
                 column: "menu_item_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MenuItems_Name",
+                table: "MenuItems",
+                column: "Name");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MenuItems_restaurant_id",
