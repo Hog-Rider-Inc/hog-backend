@@ -15,9 +15,10 @@ public class DishesController : ControllerBase
     [HttpGet("search")]
     public async Task<IActionResult> Search(
      [FromQuery] string? q,
-     [FromQuery] string? category)
+     [FromQuery] string? category,
+     [FromQuery] string? dietary)
     {
-        var result = await _dishService.SearchAsync(q, category);
+        var result = await _dishService.SearchAsync(q, category, dietary);
         return Ok(result);
     }
 }
