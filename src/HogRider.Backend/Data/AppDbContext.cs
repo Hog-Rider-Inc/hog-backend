@@ -58,8 +58,7 @@ namespace HogRider.Backend.Data
                 entity.Property(e => e.Street).HasMaxLength(150);
                 entity.Property(e => e.PostalCode).HasMaxLength(20);
 
-                entity.HasIndex(e => new { e.Country, e.City, e.Street, e.PostalCode });
-                // jei nori UNIQUE -> pridėk .IsUnique()
+                entity.HasIndex(e => new { e.Country, e.City, e.Street, e.PostalCode }).IsUnique();
             });
 
             // CLIENT
