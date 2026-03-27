@@ -34,14 +34,14 @@ public class DishService : IDishService
         {
             query = query.Where(mi =>
                 mi.MenuItemCategories.Any(mic =>
-                    mic.Category.Title == category));
+                    mic.Category!.Title == category));
         }
 
         if (!string.IsNullOrWhiteSpace(dietary))
         {
             query = query.Where(mi =>
                 mi.MenuItemDietaryTags.Any(midt =>
-                    midt.DietaryTag.Title == dietary));
+                    midt.DietaryTag!.Title == dietary));
         }
 
         return await query.Select(mi => new DishDto
