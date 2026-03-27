@@ -18,8 +18,8 @@ namespace HogRider.Backend.Tests.Data
         {
             Country = "LT",
             City = "Vilnius",
-            Street = "Test",
-            PostalCode = "12345",
+            Street = $"Street_{Guid.NewGuid()}",
+            PostalCode = Guid.NewGuid().ToString(),
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };

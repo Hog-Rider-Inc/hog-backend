@@ -1,21 +1,29 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using HogRider.Backend.Data;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 
-namespace HogRider.Backend.Data
+public class TestDbContextFactory
 {
-    public class TestDbContextFactory
+    public static AppDbContext Create()
     {
-        public static AppDbContext Create()
+        var connection = new SqliteConnection("Filename=:memory:");
+        connection.Open();
+
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseSqlite(connection)
+            .Options;
+
+        var context = new AppDbContext(options);
+        try
         {
-            var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseSqlite("Filename=:memory:")
-                .Options;
-
-            var context = new AppDbContext(options);
-
-            context.Database.OpenConnection();
             context.Database.EnsureCreated();
-
-            return context;
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.InnerException?.Message ?? ex.Message);
+            throw;
+        }
+
+        return context;
     }
 }

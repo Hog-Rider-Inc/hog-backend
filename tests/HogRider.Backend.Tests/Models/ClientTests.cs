@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace HogRider.Backend.Tests.Models
 {
-    public class ClientTestscs
+    public class ClientTests
     {
         [Fact]
         public void Can_Create_Client()

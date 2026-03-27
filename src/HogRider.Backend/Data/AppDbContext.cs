@@ -36,12 +36,20 @@ namespace HogRider.Backend.Data
             // ACCOUNT
             modelBuilder.Entity<Account>(entity =>
             {
-                entity.Property(e => e.AccountType)
-                    .HasConversion(
-                        v => v.ToString().ToLower(),
-                        v => Enum.Parse<AccountType>(v, true)
-                    )
-                    .HasColumnType("enum('client','restaurant','admin')");
+                if (Database.IsSqlite())
+                {
+                    entity.Property(e => e.AccountType)
+                        .HasConversion<string>();
+                }
+                else
+                {
+                    entity.Property(e => e.AccountType)
+                        .HasConversion(
+                            v => v.ToString().ToLower(),
+                            v => Enum.Parse<AccountType>(v, true)
+                        )
+                        .HasColumnType("enum('client','restaurant','admin')");
+                }
 
                 entity.Property(e => e.Username).HasMaxLength(100);
                 entity.Property(e => e.Email).HasMaxLength(150);
@@ -140,12 +148,20 @@ namespace HogRider.Backend.Data
             // ORDER
             modelBuilder.Entity<Order>(entity =>
             {
-                entity.Property(e => e.Status)
-                    .HasConversion(
-                        v => v.ToString().ToLower(),
-                        v => Enum.Parse<OrderStatus>(v, true)
-                    )
-                    .HasColumnType("enum('pending','confirmed','preparing','delivered','cancelled')");
+                if (Database.IsSqlite())
+                {
+                    entity.Property(e => e.Status)
+                        .HasConversion<string>();
+                }
+                else
+                {
+                    entity.Property(e => e.Status)
+                        .HasConversion(
+                            v => v.ToString().ToLower(),
+                            v => Enum.Parse<OrderStatus>(v, true)
+                        )
+                        .HasColumnType("enum('pending','confirmed','preparing','delivered','cancelled')");
+                }
 
                 entity.Property(e => e.TotalPrice)
                     .HasColumnType("decimal(8,2)");
@@ -192,16 +208,23 @@ namespace HogRider.Backend.Data
             // CLIENT INTERACTION
             modelBuilder.Entity<ClientItemInteraction>(entity =>
             {
-                entity.Property(e => e.Interaction)
-                    .HasConversion(
-                        v => v.ToString().ToLower(),
-                        v => Enum.Parse<InteractionType>(v, true)
-                    )
-                    .HasColumnType("enum('like','dislike')");
+                if (Database.IsSqlite())
+                {
+                    entity.Property(e => e.Interaction)
+                        .HasConversion<string>();
+                }
+                else
+                {
+                    entity.Property(e => e.Interaction)
+                        .HasConversion(
+                            v => v.ToString().ToLower(),
+                            v => Enum.Parse<InteractionType>(v, true)
+                        )
+                        .HasColumnType("enum('like','dislike')");
+                }
 
                 entity.HasIndex(e => new { e.ClientId, e.MenuItemId }).IsUnique();
             });
-
             // IMAGES
             modelBuilder.Entity<MenuItemImage>(entity =>
             {
