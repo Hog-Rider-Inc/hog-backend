@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HogRider.Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260323162626_CreateProdDb")]
-    partial class CreateProdDb
+    [Migration("20260328225855_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -111,7 +111,8 @@ namespace HogRider.Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Country", "City", "Street", "PostalCode");
+                    b.HasIndex("Country", "City", "Street", "PostalCode")
+                        .IsUnique();
 
                     b.ToTable("Address");
                 });
@@ -491,10 +492,6 @@ namespace HogRider.Backend.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("created_at");
 
-                    b.Property<int>("RestaurantId")
-                        .HasColumnType("int")
-                        .HasColumnName("restaurant_id");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("enum('pending','confirmed','preparing','delivered','cancelled')")
@@ -513,8 +510,6 @@ namespace HogRider.Backend.Migrations
                     b.HasIndex("AddressId");
 
                     b.HasIndex("ClientId");
-
-                    b.HasIndex("RestaurantId");
 
                     b.ToTable("Orders");
                 });
@@ -837,17 +832,9 @@ namespace HogRider.Backend.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("HogRider.Backend.Models.Restaurant", "Restaurant")
-                        .WithMany("Orders")
-                        .HasForeignKey("RestaurantId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Address");
 
                     b.Navigation("Client");
-
-                    b.Navigation("Restaurant");
                 });
 
             modelBuilder.Entity("HogRider.Backend.Models.OrderMenuItem", b =>
@@ -994,8 +981,6 @@ namespace HogRider.Backend.Migrations
                     b.Navigation("LogoImages");
 
                     b.Navigation("MenuItems");
-
-                    b.Navigation("Orders");
 
                     b.Navigation("Reviews");
                 });

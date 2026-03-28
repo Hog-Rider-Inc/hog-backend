@@ -26,7 +26,6 @@ namespace HogRider.Backend.Tests.Models
             var order = new Order
             {
                 ClientId = client.Id,
-                RestaurantId = restaurant.Id,
                 AddressId = address.Id,
                 Status = 0,
                 TotalPrice = 20,

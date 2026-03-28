@@ -174,11 +174,6 @@ namespace HogRider.Backend.Data
                     .WithMany(c => c.Orders)
                     .HasForeignKey(e => e.ClientId)
                     .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne(e => e.Restaurant)
-                    .WithMany(r => r.Orders)
-                    .HasForeignKey(e => e.RestaurantId)
-                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             // ORDER MENU ITEM

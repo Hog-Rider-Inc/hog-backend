@@ -12,10 +12,6 @@ namespace HogRider.Backend.Models
         public int ClientId { get; set; }
         public Client? Client { get; set; }
 
-        [Column("restaurant_id")]
-        public int RestaurantId { get; set; }
-        public Restaurant? Restaurant { get; set; }
-
         [Column("address_id")]
         public int AddressId { get; set; }
         public Address? Address { get; set; }
