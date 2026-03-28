@@ -32,7 +32,6 @@ namespace HogRider.Backend.Models
         public DateTime CreatedAt { get; set; }
 
         public List<MenuItem> MenuItems { get; set; } = new();
-        public List<Order> Orders { get; set; } = new();
         public List<Review> Reviews { get; set; } = new();
         public List<RestaurantLogoImage> LogoImages { get; set; } = new();
     }
