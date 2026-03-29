@@ -13,7 +13,7 @@ namespace HogRider.Backend.Models
         public Client? Client { get; set; }
 
         [Column("address_id")]
-        public int AddressId { get; set; }
+        public int? AddressId { get; set; }
         public Address? Address { get; set; }
 
         [Column("status")]
