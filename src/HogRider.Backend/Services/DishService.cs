@@ -53,4 +53,22 @@ public class DishService : IDishService
             ImageUrl = mi.Images.Select(i => i.ImageUrl).FirstOrDefault()
         }).ToListAsync();
     }
+
+    public async Task<DishDetailsDto?> GetDishByIdAsync(int id)
+    {
+        return await _context.MenuItems
+            .Where(m => m.Id == id)
+            .Select(m => new DishDetailsDto
+            {
+                Id = m.Id,
+                Name = m.Name,
+                Description = m.Description,
+                Price = m.Price,
+                RestaurantName = m.Restaurant != null ? m.Restaurant.Name : "",
+                Images = m.Images.Select(i => i.ImageUrl).ToList(),
+                Categories = m.MenuItemCategories.Select(mc => mc.Category!.Title).ToList(),
+                DietaryTags = m.MenuItemDietaryTags.Select(dt => dt.DietaryTag!.Title).ToList()
+            })
+            .FirstOrDefaultAsync();
+    }
 }
