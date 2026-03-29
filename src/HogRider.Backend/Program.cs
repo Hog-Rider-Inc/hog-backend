@@ -33,7 +33,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 );
 
 builder.Services.AddScoped<IDishService, DishService>();
-builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

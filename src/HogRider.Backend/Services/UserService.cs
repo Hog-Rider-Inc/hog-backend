@@ -4,18 +4,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HogRider.Backend.Services
 {
-    public class ClientService: IClientService
+    public class UserService: IUserService
     {
         private readonly AppDbContext _context;
 
-        public ClientService(AppDbContext context)
+        public UserService(AppDbContext context)
         {
             _context = context;
         }
-        public async Task<List<OrderDto>> GetClientOrdersAsync(int clientId)
+        public async Task<List<OrderDto>?> GetUserOrdersAsync(int userId)
         {
+            var clientExists = await _context.Clients
+                .AnyAsync(c => c.Id == userId);
+
+            if (!clientExists)
+                return null;
+
             return await _context.Orders
-                .Where(o => o.ClientId == clientId)
+                .Where(o => o.ClientId == userId)
                 .OrderByDescending(o => o.CreatedAt)
                 .Select(o => new OrderDto
                 {

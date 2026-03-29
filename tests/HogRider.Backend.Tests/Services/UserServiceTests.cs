@@ -6,7 +6,7 @@ using Xunit;
 
 namespace HogRider.Backend.Tests.Services
 {
-    public class ClientServiceTests
+    public class UserServiceTests
     {
         [Fact]
         public async Task GetClientOrdersAsync_Returns_Orders_For_Client_In_Descending_Order()
@@ -39,9 +39,9 @@ namespace HogRider.Backend.Tests.Services
             context.AddRange(olderOrder, newerOrder);
             context.SaveChanges();
 
-            var service = new ClientService(context);
+            var service = new UserService(context);
 
-            var result = await service.GetClientOrdersAsync(client.Id);
+            var result = await service.GetUserOrdersAsync(client.Id);
 
             Assert.Equal(2, result.Count);
 
