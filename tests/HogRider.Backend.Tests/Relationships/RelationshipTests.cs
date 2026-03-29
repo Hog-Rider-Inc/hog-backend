@@ -15,7 +15,6 @@ namespace HogRider.Backend.Tests.Relationships
         {
             using var context = TestDbContextFactory.Create();
 
-            // 🔥 1. Account
             var account = new Account
             {
                 AccountType = AccountType.Restaurant,
@@ -25,8 +24,6 @@ namespace HogRider.Backend.Tests.Relationships
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
-
-            // 🔥 2. Address
             var address = new Address
             {
                 Country = "LT",
@@ -40,7 +37,6 @@ namespace HogRider.Backend.Tests.Relationships
             context.AddRange(account, address);
             context.SaveChanges();
 
-            // 🔥 3. Restaurant
             var restaurant = new Restaurant
             {
                 Name = "Test Restaurant",
@@ -53,7 +49,6 @@ namespace HogRider.Backend.Tests.Relationships
             context.Restaurants.Add(restaurant);
             context.SaveChanges();
 
-            // 🔥 4. MenuItem
             var item = new MenuItem
             {
                 Name = "Pizza",
@@ -66,7 +61,6 @@ namespace HogRider.Backend.Tests.Relationships
             context.MenuItems.Add(item);
             context.SaveChanges();
 
-            // 🔥 5. Load su Include
             var loaded = context.MenuItems
                 .Include(m => m.Restaurant)
                 .First();
