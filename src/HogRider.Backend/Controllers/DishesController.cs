@@ -21,4 +21,15 @@ public class DishesController : ControllerBase
         var result = await _dishService.SearchAsync(q, category, dietary);
         return Ok(result);
     }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetDish(int id)
+    {
+        var dish = await _dishService.GetDishByIdAsync(id);
+
+        if (dish == null)
+            return NotFound();
+
+        return Ok(dish);
+    }
 }
