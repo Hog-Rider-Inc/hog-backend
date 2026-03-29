@@ -1,4 +1,5 @@
-﻿using HogRider.Backend.Services;
+﻿using HogRider.Backend.DTOs;
+using HogRider.Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HogRider.Backend.Controllers
@@ -26,6 +27,29 @@ namespace HogRider.Backend.Controllers
                 return NotFound($"User with id {userId} not found");
 
             return Ok(orders);
+        }
+
+        [HttpPost("{userId}/order")]
+        public async Task<IActionResult> CreateOrder(
+            int userId,
+            [FromBody] CreateOrderRequest request)
+        {
+            if (userId <= 0)
+                return BadRequest(new { message = "Invalid userId" });
+
+            try
+            {
+                var result = await _userService.CreateOrderAsync(userId, request);
+
+                if (!result)
+                    return NotFound(new { message = "User not found" });
+
+                return Ok();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }
