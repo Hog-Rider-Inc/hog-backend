@@ -1,6 +1,8 @@
 ﻿using HogRider.Backend.DTOs;
 using HogRider.Backend.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace HogRider.Backend.Controllers
 {
@@ -44,11 +46,35 @@ namespace HogRider.Backend.Controllers
                 if (!result)
                     return NotFound(new { message = "User not found" });
 
+                TriggerNewRecommendations(userId);
+
                 return Ok();
             }
             catch (ArgumentException ex)
             {
                 return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        private static void TriggerNewRecommendations(int userId)
+        {
+            try
+            {
+                using var http = new HttpClient();
+                http.Timeout = TimeSpan.FromSeconds(10);
+
+                var token = Environment.GetEnvironmentVariable("RECOMMENDER_API_KEY");
+                if (!string.IsNullOrWhiteSpace(token))
+                    http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var url = $"https://svc-recommender-latest.onrender.com/api/users/{userId}/recommendations";
+                using var content = new StringContent("{}", Encoding.UTF8, "application/json");
+
+                _ = http.PostAsync(url, content).GetAwaiter().GetResult();
+            }
+            catch
+            {
+                // ignore
             }
         }
     }
