@@ -75,7 +75,7 @@ namespace HogRider.Backend.Services
                 {
                     ClientId = userId,
                     AddressId = client.AddressId.Value,
-                    Status = Enums.OrderStatus.pending_acceptance,
+                    Status = Enums.OrderStatus.Delivered,
                     TotalPrice = totalPrice,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
